@@ -5,7 +5,9 @@ import { Pressable, StyleSheet, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { getPointBalance } from '@/lib/points';
 import { isSurveyCompleted } from '@/lib/survey-state';
+import { getUserName } from '@/lib/user';
 
 const weeksCompleted = 32;
 const weeksTotal = 40;
@@ -14,7 +16,8 @@ const rightRotation = progressPercent <= 50 ? (progressPercent / 50) * 180 : 180
 const leftRotation = progressPercent <= 50 ? 0 : ((progressPercent - 50) / 50) * 180;
 
 export default function HomeScreen() {
-  const nextRewardProgress = 295 / 320;
+  const [balance, setBalance] = useState(getPointBalance());
+  const nextRewardProgress = Math.min(balance / 320, 1);
   const nextRewardLabel = 'Baby Gift Box';
   const router = useRouter();
   const isFocused = useIsFocused();
@@ -23,13 +26,14 @@ export default function HomeScreen() {
   useEffect(() => {
     if (isFocused) {
       setSurveyCompletedState(isSurveyCompleted());
+      setBalance(getPointBalance());
     }
   }, [isFocused]);
 
   return (
     <ThemedView style={styles.container}>
-      <ThemedText type="title">Good morning, Mom!</ThemedText>
-      <ThemedText type="subtitle">Baby Jake is due Friday, August 21 and arriving in 6 weeks!</ThemedText>
+      <ThemedText type="title">Good morning, {getUserName()}!</ThemedText>
+      <ThemedText type="subtitle">Your baby is due Friday, August 21 and arriving in 6 weeks!</ThemedText>
 
       <View style={styles.progressWrapper}>
         <View style={styles.progressCircle}>
@@ -87,7 +91,7 @@ export default function HomeScreen() {
           <View style={[styles.rewardProgressFill, { width: `${nextRewardProgress * 100}%` }]} />
         </View>
         <View>
-          <ThemedText type="subtitle">295 / 320 pts</ThemedText>  
+          <ThemedText type="subtitle">{balance} / 320 pts</ThemedText>
         </View> 
       </View>
 

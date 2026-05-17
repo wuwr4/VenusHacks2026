@@ -1,49 +1,60 @@
+import { useIsFocused } from '@react-navigation/native';
+import { useEffect, useState } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { getPointBalance } from '@/lib/points';
 
 const rewardOptions = [
   {
-    title: 'Diapers (24pc)',
-    subtitle: 'Redeem for one session',
-    cost: '240 pts',
+    title: 'Diapers (26-pack)',
+    subtitle: 'A large pack of Pampers ultra-absorbent diapers to keep your baby dry and comfortable for up to 12 hours.',
+    cost: '180 pts',
     image: require('../../assets/images/diapers.jpeg'),
   },
   {
     title: 'Gift Box',
-    subtitle: 'Choose a baby welcome gift',
-    cost: '320 pts',
+    subtitle: 'A welcome gift for the new baby. Includes a set of clothing, a bib, and a plush toy.',
+    cost: '200 pts',
     image: require('../../assets/images/giftbox.jpeg'),
   },
   {
     title: 'Formula (16oz)',
-    subtitle: 'Self-care essentials',
-    cost: '180 pts',
+    subtitle: 'A can of Enfamil infant formula, providing essential nutrients for your baby\'s growth and development.',
+    cost: '200 pts',
     image: require('../../assets/images/babyFormula.jpeg'),
   },
   {
     title: 'Vitamins Multi-pack',
-    subtitle: 'Meal planning tools',
-    cost: '150 pts',
+    subtitle: 'A pack of essential vitamins for your baby\'s development. Includes Vitamin D, Iron, and Omega-3 supplements.',
+    cost: '120 pts',
     image: require('../../assets/images/vitamins.jpeg'),
   },
   {
-    title: 'Maternity Pass',
-    subtitle: 'Discounts on products',
-    cost: '400 pts',
+    title: 'Giftcard ($25)',
+    subtitle: 'A giftcard to a store of your choice to support your pregnacy needs.',
+    cost: '150 pts',
     image: require('../../assets/images/giftcard.jpeg'),
   },
   {
-    title: 'Community Badge',
-    subtitle: 'Connect with parents',
-    cost: '100 pts',
+    title: 'Crib',
+    subtitle: 'A new wooden crib with adjustable mattress heights, providing a safe and comfortable sleeping space for your baby.',
+    cost: '450 pts',
     image: require('../../assets/images/crib.jpeg'),
   },
 ];
 
 export default function RewardsScreen() {
+  const isFocused = useIsFocused();
+  const [balance, setBalance] = useState(getPointBalance());
+
+  useEffect(() => {
+    if (isFocused) {
+      setBalance(getPointBalance());
+    }
+  }, [isFocused]);
   return (
     <ThemedView style={styles.container}>
       <View style={styles.headerRow}>
@@ -53,7 +64,7 @@ export default function RewardsScreen() {
         </View>
         <View style={styles.balanceCard}>
           <ThemedText type="subtitle">Point Balance</ThemedText>
-          <ThemedText type="title">1,240pt</ThemedText>
+          <ThemedText type="title">{balance}pt</ThemedText>
         </View>
       </View>
 

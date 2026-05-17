@@ -8,17 +8,14 @@ CREATE TABLE survey_responses
     response_id INTEGER PRIMARY KEY,
     user_id INTEGER,
     time TEXT,
-    stress INTEGER,
-    support INTEGER,
     sleep INTEGER,
-    exercise INTEGER,
+    support INTEGER,
     headaches INTEGER,
     vision INTEGER,
     chest_pain INTEGER,
-    shortness_breath INTEGER,
-    swelling INTEGER,
-    nutrition INTEGER,
+    ribs_pain INTEGER,
     change INTEGER,
+    comments TEXT,
     FOREIGN KEY(user_id) REFERENCES users(user_id)
 )STRICT;
 

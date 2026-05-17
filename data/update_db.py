@@ -31,7 +31,7 @@ def insert_user(first_name,last_name,city,weeks_pregnant,weeks_postpartum,email,
 # -------------------------
 # Insert into survey_responses table
 # -------------------------dir
-def insert_survey_response(user_id,stress,support,sleep,exercise,headaches,vision,chest_pain,shortness_breath,swelling,nutrition,change):
+def insert_survey_response(user_id,sleep, support, symptoms, rib_pain, change):
     conn = sqlite3.connect("database.db")
 
     current_time = datetime.now().isoformat()
@@ -40,20 +40,14 @@ def insert_survey_response(user_id,stress,support,sleep,exercise,headaches,visio
         INSERT INTO survey_responses (
             user_id,
             time,
-            stress,
-            support,
             sleep,
-            exercise,
-            headaches,
-            vision,
-            chest_pain,
-            shortness_breath,
-            swelling,
-            nutrition,
+            support,
+            symptoms,
+            rib_pain,
             change
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    """, (user_id,current_time,stress,support,sleep,exercise,headaches,vision,chest_pain,shortness_breath,swelling,nutrition,change))
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    """, (user_id,current_time,sleep,support, symptoms, rib_pain,change))
 
     conn.commit()
     cursor.close()

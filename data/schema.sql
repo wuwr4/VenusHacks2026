@@ -10,10 +10,8 @@ CREATE TABLE survey_responses
     time TEXT,
     sleep INTEGER,
     support INTEGER,
-    headaches INTEGER,
-    vision INTEGER,
-    chest_pain INTEGER,
-    ribs_pain INTEGER,
+    symptoms INTEGER,
+    rib_pain INTEGER,
     change INTEGER,
     comments TEXT,
     FOREIGN KEY(user_id) REFERENCES users(user_id)

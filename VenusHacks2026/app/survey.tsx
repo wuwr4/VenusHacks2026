@@ -5,7 +5,8 @@ import { setSurveyCompleted } from '@/lib/survey-state';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { useRouter } from 'expo-router';
-
+const API_SURVEY_URL = "http://127.0.0.1:8000/items/survey?";
+const USER_ID = 1;
 
 const questions = [
   {
@@ -69,6 +70,16 @@ const questions = [
   },
 ];
 
+async function send_survey(responses:Array<Array<boolean>>)
+{
+  let encoded = responses.map(r => r.indexOf(true));
+  let url = API_SURVEY_URL;
+  let uhhh = {user_id: USER_ID, sleep: encoded[0], support:encoded[1], symptoms: encoded[2], rib_pain: encoded[3], change: encoded[4]};
+  url += new URLSearchParams(uhhh).toString();
+  console.log(url);
+  fetch(url);
+}
+
 export default function SurveyScreen() {
   const router = useRouter();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -113,6 +124,7 @@ export default function SurveyScreen() {
       setCurrentQuestionIndex(questions.length);
     } else {
       setSurveyCompleted(true);
+      send_survey(responses);
       router.push('/');
     }
   }

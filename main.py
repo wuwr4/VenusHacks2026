@@ -13,16 +13,10 @@ def read_root():
 
 class Survey_response(SQLModel):
     user_id:int
-    stress:int
-    support:int
     sleep:int
-    exercise:int
-    headaches:bool
-    vision:bool
-    chest_pain:bool
-    shortness_breath:bool
-    swelling:bool
-    nutrition:int
+    support:int
+    symptoms:int
+    rib_pain:int
     change:int
 
 class TestData(SQLModel):
@@ -36,16 +30,16 @@ async def read_item(hehe:int = 0, haha:int = 0):
 
 
 @app.get("/items/survey")
-async def read_item(user_id, stress, support, sleep, exercise, headaches, vision, chest_pain, shortness_breath, swelling, nutrition, change):
-    update_db.insert_survey_response(user_id, stress, support, sleep, exercise, headaches, vision, chest_pain, shortness_breath, swelling, nutrition, change)
+async def read_item(user_id, sleep, support, symptoms, rib_pain, change):
+    update_db.insert_survey_response(user_id, sleep, support, symptoms, rib_pain, change)
     return {"done": True}
 
 @app.get("/items/known_risks")
-async def read_item(user_id, high_blood_pressure, preeclampsia, gestational_diabetse, family_history, cholesterol_history, smoking_history):
+async def read_item(user_id, high_blood_pressure, preeclampsia, gestational_diabetes, family_history, cholesterol_history, smoking_history):
     update_db.insert_known_risk(user_id,
     high_blood_pressure,
     preeclampsia,
-    gestational_diabetse,
+    gestational_diabetes,
     family_history,
     cholesterol_history,
     smoking_history)

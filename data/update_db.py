@@ -1,17 +1,106 @@
 import sqlite3
-import os
-print(os.getcwd())
+from datetime import datetime
 
-# 1. Connect to (or create) the database file
-conn = sqlite3.connect('database.db')
-cursor = conn.cursor()
+# -------------------------
+# Insert into users table
+# -------------------------
+def insert_user(first_name,last_name,city,weeks_pregnant,weeks_postpartum,email,hobbies,report_data,points):
+    conn = sqlite3.connect("database.db")
 
-# 2. Read your schema file
-with open('data/schema.sql', 'r') as f:
-    sql_script = f.read()
+    query = """
+    INSERT INTO users (
+        first_name,
+        last_name,
+        city,
+        weeks_pregnant,
+        weeks_postpartum,
+        email,
+        hobbies,
+        report_data,
+        points
+    )
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """
 
-# 3. Execute the script to create tables
-cursor.executescript(sql_script)
+    cursor = conn.execute(query, (first_name,last_name,city,weeks_pregnant, weeks_postpartum,email,hobbies,report_data,points))
 
-conn.commit()
-conn.close()
+    conn.commit()
+    cursor.close()
+
+
+# -------------------------
+# Insert into survey_responses table
+# -------------------------dir
+def insert_survey_response(user_id,stress,support,sleep,exercise,headaches,vision,chest_pain,shortness_breath,swelling,nutrition,change):
+    conn = sqlite3.connect("database.db")
+
+    current_time = datetime.now().isoformat()
+
+    cursor = conn.execute("""
+        INSERT INTO survey_responses (
+            user_id,
+            time,
+            stress,
+            support,
+            sleep,
+            exercise,
+            headaches,
+            vision,
+            chest_pain,
+            shortness_breath,
+            swelling,
+            nutrition,
+            change
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """, (user_id,current_time,stress,support,sleep,exercise,headaches,vision,chest_pain,shortness_breath,swelling,nutrition,change))
+
+    conn.commit()
+    cursor.close()
+
+
+# -------------------------
+# Insert into known_risks table
+# -------------------------
+def insert_known_risk(user_id,high_blood_pressure,preeclampsia,gestational_diabetse,family_history,cholesterol_history, smoking_history):
+    conn = sqlite3.connect("database.db")
+
+    query = """
+    INSERT INTO known_risks (
+        user_id,
+        high_blood_pressure,
+        preeclampsia,
+        gestational_diabetse,
+        family_history,
+        cholesterol_history,
+        smoking_history
+    )
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+    """
+
+    cursor = conn.execute(query, (user_id,high_blood_pressure,preeclampsia,gestational_diabetse,family_history,cholesterol_history, smoking_history))
+
+    conn.commit()
+    cursor.close()
+
+
+# -------------------------
+# Insert into incentives table
+# -------------------------
+def insert_incentive(item_name,item_description,amount,cost):
+    conn = sqlite3.connect("database.db")
+
+    query = """
+    INSERT INTO incentives (
+        item_name,
+        item_description,
+        amount,
+        cost
+    )
+    VALUES (?, ?, ?, ?)
+    """
+
+    cursor = conn.execute(query, (item_name,item_description,amount,cost))
+
+    conn.commit()
+    cursor.close()

@@ -5,12 +5,15 @@ import { setSurveyCompleted } from '@/lib/survey-state';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { useRouter } from 'expo-router';
+const API_SURVEY_URL = "http://127.0.0.1:8000/items/survey?";
+const USER_ID = 1;
 
 const questions = [
   {
     id: 1,
     title: 'Question 1',
     text: 'How many hours of sleep did you get last night?',
+    multi: false,
     options: [
       'Less than 5 hours',
       '5 - 6 hours',
@@ -22,6 +25,7 @@ const questions = [
     id: 2,
     title: 'Question 2',
     text: 'Over the past few days, how often have you felt emotionally supported and connected to others?',
+    multi: false,
     options: [
       'Always',
       'Often',
@@ -33,6 +37,7 @@ const questions = [
     id: 3,
     title: 'Question 3',
     text: 'In the past week, have you experienced any of the following? (Check all that apply)',
+    multi: true,
     options: [
       'Strong or unusual headaches',
       'Vision changes (blurred vision, seeing spots, etc.)',
@@ -44,6 +49,7 @@ const questions = [
     id: 4,
     title: 'Question 4',
     text: 'Have you recently felt strong pain or pressure in your upper stomach or below your ribs?',
+    multi: false,
     options: [
       'No',
       'Mild discomfort',
@@ -54,6 +60,7 @@ const questions = [
     id: 5,
     title: 'Question 5',
     text: 'Compared to yesterday, how does your body feel today?',
+    multi: false,
     options: [
       'Better',
       'About the same',
@@ -62,6 +69,16 @@ const questions = [
     ],
   },
 ];
+
+async function send_survey(responses:Array<Array<boolean>>)
+{
+  let encoded = responses.map(r => r.indexOf(true));
+  let url = API_SURVEY_URL;
+  let uhhh = {user_id: USER_ID, sleep: encoded[0], support:encoded[1], symptoms: encoded[2], rib_pain: encoded[3], change: encoded[4]};
+  url += new URLSearchParams(uhhh).toString();
+  console.log(url);
+  fetch(url);
+}
 
 export default function SurveyScreen() {
   const router = useRouter();
@@ -85,7 +102,16 @@ export default function SurveyScreen() {
 
   function toggle(i: number) {
     const copy = [...responses];
-    copy[currentQuestionIndex][i] = !copy[currentQuestionIndex][i];
+    
+    // If single-select (radio button behavior), clear all other selections
+    if (!currentQuestion.multi) {
+      copy[currentQuestionIndex] = Array(currentQuestion.options.length).fill(false);
+      copy[currentQuestionIndex][i] = true;
+    } else {
+      // Multi-select (checkbox behavior)
+      copy[currentQuestionIndex][i] = !copy[currentQuestionIndex][i];
+    }
+    
     setResponses(copy);
   }
 
@@ -98,6 +124,7 @@ export default function SurveyScreen() {
       setCurrentQuestionIndex(questions.length);
     } else {
       setSurveyCompleted(true);
+      send_survey(responses);
       router.push('/');
     }
   }
@@ -157,7 +184,15 @@ export default function SurveyScreen() {
               <View style={styles.options}>
                 {currentQuestion.options.map((opt, i) => (
                   <Pressable key={opt} style={styles.optionRow} onPress={() => toggle(i)}>
-                    <View style={styles.checkbox}>{currentResponses[i] && <View style={styles.checkboxInner} />}</View>
+                    <View style={[
+                      currentQuestion.multi ? styles.checkbox : styles.radioButton
+                    ]}>
+                      {currentResponses[i] && (
+                        <View style={[
+                          currentQuestion.multi ? styles.checkboxInner : styles.radioButtonInner
+                        ]} />
+                      )}
+                    </View>
                     <View style={styles.optionContent}>
                       <ThemedText type="defaultSemiBold">{opt}</ThemedText>
                     </View>
@@ -257,6 +292,23 @@ const styles = StyleSheet.create({
     height: 16,
     backgroundColor: '#9CA3AF',
     borderRadius: 3,
+  },
+  radioButton: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: '#9CA3AF',
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+  },
+  radioButtonInner: {
+    width: 16,
+    height: 16,
+    backgroundColor: '#9CA3AF',
+    borderRadius: 8,
   },
   optionContent: {
     flex: 1,

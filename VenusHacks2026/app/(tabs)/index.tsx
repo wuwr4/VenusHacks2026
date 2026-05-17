@@ -1,7 +1,7 @@
 import { useIsFocused } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View, ScrollView } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -28,69 +28,71 @@ export default function HomeScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <ThemedText type="title">Good morning, Mom!</ThemedText>
-      <ThemedText type="subtitle">Baby Jake is due Friday, August 21 and arriving in 6 weeks!</ThemedText>
+      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+        <ThemedText type="title">Good morning, Mom!</ThemedText>
+        <ThemedText type="subtitle">Baby Jake is due Friday, August 21 and arriving in 6 weeks!</ThemedText>
 
-      <View style={styles.progressWrapper}>
-        <View style={styles.progressCircle}>
-          <View style={styles.progressTrack} />
-          <View style={[styles.progressFill, styles.rightHalf, { transform: [{ rotate: `${rightRotation}deg` }] }]} />
-          <View
-            style={[
-              styles.progressFill,
-              styles.leftHalf,
-              { transform: [{ rotate: `${leftRotation}deg` }], opacity: progressPercent > 50 ? 1 : 0 },
-            ]}
-          />
-          <View style={styles.progressCenter}>
-            <ThemedText type="title">{weeksCompleted}/{weeksTotal}</ThemedText>
-            <ThemedText type="subtitle">weeks</ThemedText>
+        <View style={styles.progressWrapper}>
+          <View style={styles.progressCircle}>
+            <View style={styles.progressTrack} />
+            <View style={[styles.progressFill, styles.rightHalf, { transform: [{ rotate: `${rightRotation}deg` }] }]} />
+            <View
+              style={[
+                styles.progressFill,
+                styles.leftHalf,
+                { transform: [{ rotate: `${leftRotation}deg` }], opacity: progressPercent > 50 ? 1 : 0 },
+              ]}
+            />
+            <View style={styles.progressCenter}>
+              <ThemedText type="title">{weeksCompleted}/{weeksTotal}</ThemedText>
+              <ThemedText type="subtitle">weeks</ThemedText>
+            </View>
           </View>
         </View>
-      </View>
 
-      <ThemedText type="subtitle" style={styles.quote}>
-        “Every step you take is a step toward the most beautiful arrival.”
-      </ThemedText>
-
-      <ThemedView style={styles.cardContainer}>
-        <ThemedText type="subtitle">Upcoming Events</ThemedText>
-        <ThemedView style={styles.card}>
-          <ThemedText type="subtitle">Mother's Meetup</ThemedText>
-          <ThemedText>Sunday, May 17 (1:30pm - 3:30pm)</ThemedText>
-          <ThemedText>Location: Capybara Cafe</ThemedText>
-        </ThemedView>
-      </ThemedView>
-    
-        <Pressable
-        style={({ pressed }) => [
-          styles.button,
-          surveyCompleted && styles.buttonDisabled,
-          pressed && !surveyCompleted && styles.buttonPressed,
-        ]}
-        onPress={() => {
-          if (!surveyCompleted) {
-            router.push('/survey');
-          }
-        }}
-        disabled={surveyCompleted}>
-        <ThemedText type="subtitle" style={styles.buttonText}>
-          {surveyCompleted ? 'Survey Completed' : 'Take the Daily Survey!'}
+        <ThemedText type="subtitle" style={styles.quote}>
+          “Every step you take is a step toward the most beautiful arrival.”
         </ThemedText>
-      </Pressable>
 
-       <View style={styles.rewardProgress}>
-        <View style={styles.rewardProgressHeader}>
-          <ThemedText type="subtitle">Next reward: {nextRewardLabel}</ThemedText>
-        </View>
-        <View style={styles.rewardProgressBar}>
-          <View style={[styles.rewardProgressFill, { width: `${nextRewardProgress * 100}%` }]} />
-        </View>
-        <View>
-          <ThemedText type="subtitle">295 / 320 pts</ThemedText>  
-        </View> 
-      </View>
+        <Pressable
+          style={({ pressed }) => [
+            styles.button,
+            surveyCompleted && styles.buttonDisabled,
+            pressed && !surveyCompleted && styles.buttonPressed,
+          ]}
+          onPress={() => {
+            if (!surveyCompleted) {
+              router.push('/survey');
+            }
+          }}
+          disabled={surveyCompleted}>
+          <ThemedText type="subtitle" style={styles.buttonText}>
+            {surveyCompleted ? 'Survey Completed' : 'Take the Daily Survey!'}
+          </ThemedText>
+        </Pressable>
 
+        <View style={styles.rewardProgress}>
+          <View style={styles.rewardProgressHeader}>
+            <ThemedText type="subtitle">Next reward: {nextRewardLabel}</ThemedText>
+          </View>
+          <View style={styles.rewardProgressBar}>
+            <View style={[styles.rewardProgressFill, { width: `${nextRewardProgress * 100}%` }]} />
+          </View>
+          <View>
+            <ThemedText type="subtitle">295 / 320 pts</ThemedText>
+          </View>
+        </View>
+
+        <ThemedView style={styles.cardContainer}>
+          <ThemedText type="subtitle">Upcoming Events</ThemedText>
+          <ThemedView style={styles.card}>
+            <ThemedText type="subtitle">Mother's Meetup</ThemedText>
+            <ThemedText>Sunday, May 17 (1:30pm - 3:30pm)</ThemedText>
+            <ThemedText>Location: Capybara Cafe</ThemedText>
+          </ThemedView>
+        </ThemedView>
+
+      </ScrollView>
     </ThemedView>
   );
 }
@@ -98,22 +100,24 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    gap: 16,
-    padding: 24,
-    paddingTop: 80,
   },
-    cardContainer: {
-    flex: 1,
+  scrollContent: {
+    paddingHorizontal: 24,
+    paddingTop: 80,
+    paddingBottom: 40,
+    gap: 16,
+  },
+  cardContainer: {
     gap: 12,
     marginBottom: 20,
   },
   card: {
-    flex: 1,
     width: '100%',
     borderRadius: 16,
     padding: 20,
     justifyContent: 'center',
     backgroundColor: '#F3F4F6',
+    minHeight: 120,
   },
   progressWrapper: {
     alignItems: 'center',
@@ -171,6 +175,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     alignItems: 'center',
     justifyContent: 'center',
+    marginBottom: 12,
   },
   buttonPressed: {
     opacity: 0.75,
